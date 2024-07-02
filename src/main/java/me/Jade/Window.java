@@ -16,6 +16,15 @@ public class Window {
     int width, height;
     String title;
 
+    public float brightness = 0;
+
+    private static Scene currentScene = null;
+
+    private Window() {
+        this.width = 1920;
+        this.height = 1080;
+        this.title = "Mario";
+    }
 
     public static Window get() {
         if (window == null) {
@@ -25,10 +34,19 @@ public class Window {
         return window;
     }
 
-    private Window() {
-        this.width = 1920;
-        this.height = 1080;
-        this.title = "Mario";
+    public static void changeScene(int newScene) {
+        System.out.println(newScene);
+        if (newScene == 0) {
+            currentScene = new LevelEditorScene();
+            System.out.println("Switching to level editor scene");
+        } else if (newScene == 1) {
+            currentScene = new LevelScene();
+            System.out.println("Switching to level scene");
+        } else {
+            System.exit(-1);
+        }
+
+        currentScene.init();
     }
 
     public void run() throws IllegalAccessException {
@@ -84,6 +102,8 @@ public class Window {
         glfwShowWindow(glfwWindow);
 
         GL.createCapabilities(); //VERY IMPORTANT
+
+        Window.changeScene(0);
     }
 
     public void loop() {
@@ -91,12 +111,15 @@ public class Window {
             // Poll events
             glfwPollEvents();
 
-            System.out.println(KeyListener.isKeyDown(GLFW_KEY_SPACE));
-
-            glClearColor(1, 0, 0, 1);
+            glClearColor(brightness, brightness, brightness, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            currentScene.update(Time.getDT());
+
             glfwSwapBuffers(glfwWindow);
+
+            MouseListener.endFrame();
+            Time.endFrame();
         }
     }
 }
