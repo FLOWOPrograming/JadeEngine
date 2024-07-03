@@ -1,6 +1,9 @@
 package me.jade;
 
+import me.jade.ecs.GameObject;
+import me.jade.ecs.components.SpriteRenderer;
 import me.jade.renderer.Shader;
+import me.jade.renderer.Texture;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
@@ -14,16 +17,19 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class LevelEditorScene extends Scene {
 
-    Shader shader;
+    private Shader shader;
+    private Texture texture;
+
+    private GameObject gameObject;
 
     private int vaoID, vboID, eboID;
 
     private float[] vertexArray = {
-        //position              //color
-         100f, 0f,   0.0f,     1.0f, 0.0f, 0.0f, 1.0f, // BR
-         0f,   100f, 0.0f,     0.0f, 1.0f, 0.0f, 1.0f, // TL
-         100f, 100f, 0.0f,     0.0f, 0.0f, 1.0f, 1.0f, // TR
-         0f,   0f,   0.0f,     1.0f, 1.0f, 0.0f, 1.0f  // BL
+        //position             //color                     // UV
+         100f, 0f,   0.0f,     1.0f, 0.0f, 0.0f, 1.0f,     1, 1, // BR
+         0f,   100f, 0.0f,     0.0f, 1.0f, 0.0f, 1.0f,     0, 0, // TL
+         100f, 100f, 0.0f,     0.0f, 0.0f, 1.0f, 1.0f,     1, 0, // TR
+         0f,   0f,   0.0f,     1.0f, 1.0f, 0.0f, 1.0f,     0, 1  // BL
     };
 
 
@@ -39,10 +45,16 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        this.gameObject = new GameObject("Object1");
+        this.gameObject.addComponent(new SpriteRenderer());
+        this.addGameObject(this.gameObject);
+
         this.camera = new Camera(new Vector2f(0.0f, 0.0f));
 
         shader = new Shader("C:\\Users\\marij\\IdeaProjects\\JadeEngine\\src\\main\\java\\me\\jade\\util\\shaders\\default.glsl");
         shader.compile();
+
+        this.texture = new Texture("C:\\Users\\marij\\IdeaProjects\\JadeEngine\\src\\main\\java\\me\\jade\\util\\images\\BD.PNG");
 
         //generate vao, vbo, ebo
 
@@ -69,34 +81,50 @@ public class LevelEditorScene extends Scene {
 
         int positionSize = 3;
         int colorSize = 4;
-        int floatSizeBytes = Float.BYTES;
-        int vertexSizeBytes = (positionSize + colorSize) * floatSizeBytes;
+        int uvSize = 2;
+        int vertexSizeBytes = (positionSize + colorSize + uvSize) * Float.BYTES;
 
         glVertexAttribPointer(0, positionSize, GL_FLOAT, false, vertexSizeBytes, 0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionSize * floatSizeBytes);
+        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionSize * Float.BYTES);
         glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionSize + colorSize) * Float.BYTES);
+        glEnableVertexAttribArray(2);
     }
 
     @Override
     public void update(float dt) {
+        for (GameObject go : this.gameObjects) {
+            go.update(dt);
+        }
+
         // Bind shader program
         shader.use();
+
+        shader.uploadTexture("TEX_SAMPLER", 0);
+        glActiveTexture(GL_TEXTURE0);
+        texture.bind();
+
         shader.uploadMat4f("uProjection", camera.getProjectionMatrix());
         shader.uploadMat4f("uView", camera.getViewMatrix());
+        shader.uploadFloat("uTime", Time.getTimeElapsed());
+
         //Bind vao
         glBindVertexArray(vaoID);
 
         // Enable vertex attrib pointers
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         //draw
         glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
 
         glBindVertexArray(0);
 

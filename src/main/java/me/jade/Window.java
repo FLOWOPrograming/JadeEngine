@@ -35,18 +35,16 @@ public class Window {
     }
 
     public static void changeScene(int newScene) {
-        System.out.println(newScene);
         if (newScene == 0) {
             currentScene = new LevelEditorScene();
-            System.out.println("Switching to level editor scene");
         } else if (newScene == 1) {
             currentScene = new LevelScene();
-            System.out.println("Switching to level scene");
         } else {
             System.exit(-1);
         }
 
         currentScene.init();
+        currentScene.start();
     }
 
     public void run() throws IllegalAccessException {
