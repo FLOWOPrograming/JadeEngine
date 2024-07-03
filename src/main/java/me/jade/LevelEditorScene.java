@@ -1,6 +1,7 @@
 package me.jade;
 
 import me.jade.renderer.Shader;
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -19,10 +20,10 @@ public class LevelEditorScene extends Scene {
 
     private float[] vertexArray = {
         //position              //color
-         0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f, 1.0f, // BR
-        -0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f, 1.0f, // TL
-         0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f, 1.0f, // TR
-        -0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f  // BL
+         100f, 0f,   0.0f,     1.0f, 0.0f, 0.0f, 1.0f, // BR
+         0f,   100f, 0.0f,     0.0f, 1.0f, 0.0f, 1.0f, // TL
+         100f, 100f, 0.0f,     0.0f, 0.0f, 1.0f, 1.0f, // TR
+         0f,   0f,   0.0f,     1.0f, 1.0f, 0.0f, 1.0f  // BL
     };
 
 
@@ -38,6 +39,8 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        this.camera = new Camera(new Vector2f(0.0f, 0.0f));
+
         shader = new Shader("C:\\Users\\marij\\IdeaProjects\\JadeEngine\\src\\main\\java\\me\\jade\\util\\shaders\\default.glsl");
         shader.compile();
 
@@ -80,6 +83,8 @@ public class LevelEditorScene extends Scene {
     public void update(float dt) {
         // Bind shader program
         shader.use();
+        shader.uploadMat4f("uProjection", camera.getProjectionMatrix());
+        shader.uploadMat4f("uView", camera.getViewMatrix());
         //Bind vao
         glBindVertexArray(vaoID);
 

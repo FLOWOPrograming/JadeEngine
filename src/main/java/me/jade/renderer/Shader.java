@@ -1,8 +1,12 @@
 package me.jade.renderer;
 
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
@@ -45,9 +49,6 @@ public class Shader {
 
         vertexSource = vertexSourceBuilder.toString();
         fragmentSource = fragmentSourceBuilder.toString();
-
-        System.out.println(vertexSource);
-        System.out.println(fragmentSource);
     }
 
     public void compile() {
@@ -99,5 +100,13 @@ public class Shader {
 
     public void detach() {
         glUseProgram(0);
+    }
+
+    public void uploadMat4f(String varName, Matrix4f mat4) {
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(4*4);
+        mat4.get(matBuffer);
+
+        glUniformMatrix4fv(varLocation, false, matBuffer);
     }
 }
