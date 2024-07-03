@@ -1,4 +1,4 @@
-package me.Jade;
+package me.jade;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 

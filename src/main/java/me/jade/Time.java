@@ -1,4 +1,4 @@
-package me.Jade;
+package me.jade;
 
 public class Time {
     public static long timeStarted = System.nanoTime();

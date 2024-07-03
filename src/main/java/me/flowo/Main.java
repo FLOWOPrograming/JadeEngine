@@ -1,6 +1,6 @@
 package me.flowo;
 
-import me.Jade.Window;
+import me.jade.Window;
 
 public class Main {
     public static void main(String[] args) throws IllegalAccessException {

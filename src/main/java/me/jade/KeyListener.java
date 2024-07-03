@@ -1,8 +1,4 @@
-package me.Jade;
-
-import org.lwjgl.glfw.GLFW;
-
-import java.security.Key;
+package me.jade;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
