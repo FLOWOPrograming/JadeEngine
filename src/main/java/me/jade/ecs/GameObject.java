@@ -1,16 +1,26 @@
 package me.jade.ecs;
 
+import me.jade.Transform;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameObject {
 
     private String name;
-    List<Component> components;
+    private List<Component> components;
+    public Transform transform;
 
     public GameObject(String name) {
         this.name = name;
         this.components = new ArrayList<>();
+        this.transform = new Transform();
+    }
+
+    public GameObject(String name, Transform transform) {
+        this.name = name;
+        this.components = new ArrayList<>();
+        this.transform = transform;
     }
 
     public String getName() {

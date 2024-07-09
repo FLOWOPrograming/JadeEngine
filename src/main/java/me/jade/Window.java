@@ -47,6 +47,10 @@ public class Window {
         currentScene.start();
     }
 
+    public static Scene getCurrentScene() {
+        return currentScene;
+    }
+
     public void run() throws IllegalAccessException {
         System.out.println("Hello LWJGL " + Version.getVersion()+"!");
 
@@ -94,7 +98,7 @@ public class Window {
         glfwMakeContextCurrent(glfwWindow);
 
         //enable v-sync
-        glfwSwapInterval(1);
+        //glfwSwapInterval(1);
 
         //make the window visible
         glfwShowWindow(glfwWindow);

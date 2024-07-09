@@ -1,34 +1,48 @@
 #type vertex
 #version 330 core
 
-layout(location = 0) in vec3 aPos;
+layout(location = 0) in vec2 aPos;
 layout(location = 1) in vec4 aColor;
 layout(location = 2) in vec2 aUV;
+layout(location = 3) in float aTexID;
 
 uniform mat4 uProjection;
 uniform mat4 uView;
 
+
 out vec4 fColor;
 out vec2 fUV;
+out float fTexID;
 
 void main() {
     fColor = aColor;
     fUV = aUV;
-    gl_Position = uProjection * uView * vec4(aPos, 1.0);
+    fTexID = aTexID;
+
+    gl_Position = uProjection * uView * vec4(aPos, 1.0, 1.0);
 }
 
 #type frag
 #version 330 core
 
-uniform float uTime;
-uniform sampler2D TEX_SAMPLER;
-
 in vec4 fColor;
 in vec2 fUV;
+in float fTexID;
+
+uniform sampler2D uTextures[8];
 
 out vec4 color;
 
 void main() {
-    color = texture(TEX_SAMPLER, fUV);
+    if (fTexID > 0) {
+        int id = int(fTexID);
+        color = fColor * texture(uTextures[id], fUV);
+        //color = vec4(fUV, 0, 1);
+        //vec3 c = vec3(id / 3f);
+        //color = vec4(c, 1);
+    } else {
+        color = fColor;
+    }
+
 }
 
