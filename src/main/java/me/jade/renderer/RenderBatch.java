@@ -37,13 +37,20 @@ public class RenderBatch {
 
     private int vaoID, vboID;
     private int maxBatchSize;
+    private int maxTextureCount;
     private Shader shader;
     private List<Texture> textures;
-    private int[] texSlots = {0, 1, 2, 3, 4, 5, 6, 7};
+    private int[] texSlots;
 
-    public RenderBatch(int maxBatchSize, Shader shader) {
+    public RenderBatch(int maxBatchSize, int maxTextureCount, Shader shader) {
         this.shader = shader;
         this.maxBatchSize = maxBatchSize;
+        this.maxTextureCount = maxTextureCount;
+
+        texSlots = new int[maxTextureCount];
+        for (int i = 0; i < maxTextureCount; i++) {
+            texSlots[i] = i;
+        }
 
         this.sprites = new SpriteRenderer[maxBatchSize];
 
@@ -92,6 +99,10 @@ public class RenderBatch {
 
         if (sprite.getTexture() != null) {
             if (!textures.contains(sprite.getTexture())) {
+                if (textures.size() >= this.maxTextureCount) {
+                    throw new RuntimeException("Tried to add a sprite with a new texture and tried to surpass the texture limit!");
+                }
+
                 System.out.println("Adding new texture with path '" + sprite.getTexture().filepath + "' to ID:" + textures.size());
                 textures.add(sprite.getTexture());
             }
@@ -116,7 +127,6 @@ public class RenderBatch {
         shader.uploadMat4f("uView", Window.getCurrentScene().camera().getViewMatrix());
 
         for (int i = 0; i < textures.size(); i++) {
-            System.out.println("Activating texture with path '" + textures.get(i).filepath + "' to ID:" + (i + 1));
             glActiveTexture(GL_TEXTURE0 + i + 1);
             textures.get(i).bind();
         }
@@ -219,8 +229,8 @@ public class RenderBatch {
             vertices[offset + 5] = color.w;
 
             // UV
-            vertices[offset + 6] = sprite.getUVCoords()[i].x;
-            vertices[offset + 7] = sprite.getUVCoords()[i].y;
+            vertices[offset + 6] = sprite.getTexCoords()[i].x;
+            vertices[offset + 7] = sprite.getTexCoords()[i].y;
 
             // Tex ID
             vertices[offset + 8] = texID;
@@ -231,5 +241,13 @@ public class RenderBatch {
 
     public boolean hasRoom() {
         return hasRoom;
+    }
+
+    public boolean hasTextureRoom() {
+        return this.textures.size() < this.maxTextureCount;
+    }
+
+    public boolean hasTexture(Texture tex) {
+        return textures.contains(tex);
     }
 }

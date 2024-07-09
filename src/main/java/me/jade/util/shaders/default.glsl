@@ -29,17 +29,14 @@ in vec4 fColor;
 in vec2 fUV;
 in float fTexID;
 
-uniform sampler2D uTextures[8];
+uniform sampler2D uTexture[8];
 
 out vec4 color;
 
 void main() {
     if (fTexID > 0) {
         int id = int(fTexID);
-        color = fColor * texture(uTextures[id], fUV);
-        //color = vec4(fUV, 0, 1);
-        //vec3 c = vec3(id / 3f);
-        //color = vec4(c, 1);
+        color = fColor * texture(uTexture[id], fUV);
     } else {
         color = fColor;
     }

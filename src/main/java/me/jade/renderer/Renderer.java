@@ -28,6 +28,8 @@ public class Renderer {
         boolean added = false;
         for (RenderBatch batch : batches) {
             if (batch.hasRoom()) {
+                if (!(sprite.getTexture() == null || (batch.hasTexture(sprite.getTexture()) || batch.hasTextureRoom()))) continue; // Check if there is enough textures
+
                 batch.addSprite(sprite);
                 added = true;
                 break;
@@ -35,7 +37,7 @@ public class Renderer {
         }
 
         if (!added) {
-            RenderBatch renderBatch = new RenderBatch(MAX_BATCH_SIZE, shader);
+            RenderBatch renderBatch = new RenderBatch(MAX_BATCH_SIZE, 8, shader);
             renderBatch.start();
             batches.add(renderBatch);
             renderBatch.addSprite(sprite);

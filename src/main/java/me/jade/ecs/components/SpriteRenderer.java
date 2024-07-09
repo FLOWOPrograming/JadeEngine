@@ -8,23 +8,16 @@ import org.joml.Vector4f;
 public class SpriteRenderer extends Component {
 
     private Vector4f color;
-    private Vector2f[] texCoords;
-    private Texture texture;
+    private Sprite sprite;
 
     public SpriteRenderer(Vector4f color) {
         this.color = color;
-        this.texture = null;
+        this.sprite = new Sprite(null);
     }
 
-    public SpriteRenderer(Texture texture) {
+    public SpriteRenderer(Sprite sprite) {
         this.color = new Vector4f(1);
-        this.texture = texture;
-    }
-
-    public SpriteRenderer(Vector4f color, Texture texture) {
-        this.color = color;
-        this.texture = texture;
-        this.texCoords = new Vector2f[4];
+        this.sprite = sprite;
     }
 
     public Vector4f getColor() {
@@ -32,20 +25,11 @@ public class SpriteRenderer extends Component {
     }
 
     public Texture getTexture() {
-        return texture;
+        return sprite.getTexture();
     }
 
-    public Vector2f[] getUVCoords() {
-        if (texCoords == null) {
-            texCoords = new Vector2f[]{
-                    new Vector2f(0, 0),
-                    new Vector2f(1, 0),
-                    new Vector2f(0, 1),
-                    new Vector2f(1, 1)
-            };
-        }
-
-        return texCoords;
+    public Vector2f[] getTexCoords() {
+        return sprite.getTexCoords();
     }
 
     @Override

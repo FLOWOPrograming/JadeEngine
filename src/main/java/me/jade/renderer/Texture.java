@@ -12,6 +12,9 @@ public class Texture {
     public String filepath;
     private int texID;
 
+    private int width;
+    private int height;
+
     public Texture(String filepath) {
         this.filepath = filepath;
 
@@ -40,6 +43,9 @@ public class Texture {
             return;
         }
 
+        this.width = width.get(0);
+        this.height = height.get(0);
+
         int chanelMode = 0;
 
         if (channels.get(0) == 3) {
@@ -63,5 +69,13 @@ public class Texture {
 
     public void unbind() {
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

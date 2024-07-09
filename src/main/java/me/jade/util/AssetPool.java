@@ -1,5 +1,6 @@
 package me.jade.util;
 
+import me.jade.ecs.components.Spritesheet;
 import me.jade.renderer.Shader;
 import me.jade.renderer.Texture;
 
@@ -50,5 +51,29 @@ public class AssetPool {
         textures.put(absoluteFilePath, texture);
 
         return textures.get(absoluteFilePath);
+    }
+
+    //---------------
+    //--SPRITESHEET--
+    //---------------
+
+    private static Map<String, Spritesheet> spritesheets = new HashMap<>();
+
+    public static Spritesheet getSpriteSheet(String resourceName) {
+        File shaderFile = new File(resourceName);
+        String absoluteFilePath = shaderFile.getAbsolutePath();
+
+        if (spritesheets.containsKey(absoluteFilePath)) return spritesheets.get(absoluteFilePath);
+
+        throw new IllegalArgumentException("You did not have a spritesheet with this path!");
+    }
+
+    public static void addSpriteSheet(String resourceName, Spritesheet spritesheet) {
+        File shaderFile = new File(resourceName);
+        String absoluteFilePath = shaderFile.getAbsolutePath();
+
+        if (spritesheets.containsKey(resourceName)) return;
+
+        spritesheets.put(absoluteFilePath, spritesheet);
     }
 }
